@@ -18,14 +18,62 @@ public class MatrixExample {
         int[][] matrix2 = generateRandomMatrix(numRows, numCols);
         int[][] result = multiplyMatrices(matrix, matrix2);
 
-        System.out.println("result length: " + result.length + " x " + result[0].length);
+        System.out.println("result length: " + result.length + " x " +
+                result[0].length);
         for (int i = 0; i < result.length; i++) {
-            for (int j = 0; j < result[i].length; i++) {
+            for (int j = 0; j < result[i].length; j++) {
                 System.out.print(result[i][j] + " ");
             }
             System.out.println();
         }
 
+        // test Multiply
+        int[][] a = { { 1, 2, 3 }, { 4, 5, 6 } }, b = { { 7, 8 }, { 9, 10 }, { 11, 12 } };
+        int[][] c = { { 58, 64 }, { 139, 154 } };
+        testMultiply(a, b, c);
+
+        int[][] a1 = { { 2, 0 }, { 0, 2 } }, b1 = { { 1, 2 }, { 3, 4 } };
+        int[][] c1 = { { 2, 4 }, { 6, 8 } };
+        testMultiply(a1, b1, c1);
+
+        int[][] a2 = { { 3 } }, b2 = { { 4 } };
+        int[][] c2 = { { 12 } };
+        testMultiply(a2, b2, c2);
+
+        // test Generate
+        testGenerate(6, 7);
+        testGenerate(100, 100);
+        testGenerate(1, 2);
+    }
+
+    private static boolean check(int[][] x, int[][] y) {
+        if (x.length != y.length) {
+            return false;
+        }
+        for (int i = 0; i < x.length; i++) {
+            if (x[i].length != y[i].length) {
+                return false;
+            }
+            for (int j = 0; j < x[i].length; j++) {
+                if (x[i][j] != y[i][j]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private static void testMultiply(int[][] a, int[][] b, int[][] result) {
+        if (check(multiplyMatrices(a, b), result)) {
+            System.out.println("Passed.");
+        }
+    }
+
+    private static void testGenerate(int rows, int cols) {
+        int[][] m = generateRandomMatrix(rows, cols);
+        if (m.length == rows && m[0].length == cols) {
+            System.out.println("Passed.");
+        }
     }
 
     public static int[][] multiplyMatrices(int[][] matrix1, int[][] matrix2) {
@@ -39,14 +87,12 @@ public class MatrixExample {
                     "Number of columns in the first matrix must be equal to the number of rows in the second matrix.");
         }
 
-        // Some more issues here too
-        int[][] result = new int[rows1+1][cols2+1];
+        int[][] result = new int[rows1][cols2];
 
-        // Lots of issues with this code, it used to be working perfectly though
         for (int i = 0; i < rows1; i++) {
             for (int j = 0; j < cols2; j++) {
                 for (int k = 0; k < cols1; k++) {
-                    result[j][k] += matrix1[i][j] * matrix2[k][j];
+                    result[i][j] += matrix1[i][k] * matrix2[k][j];
                 }
             }
         }
@@ -58,9 +104,13 @@ public class MatrixExample {
         int[][] matrix = new int[numRows][numCols];
         Random random = new Random();
 
+        if (numRows <= 0 || numCols <= 0) {
+            throw new IllegalArgumentException();
+        }
+
         for (int i = 0; i < numRows; i++) {
             for (int j = 0; j < numCols; j++) {
-                matrix[i][j] = random.nextInt(100); // Generates random values between 0 and 99
+                matrix[i][j] = random.nextInt(100);
             }
         }
 
